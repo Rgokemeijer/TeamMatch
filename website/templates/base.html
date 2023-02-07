@@ -18,7 +18,7 @@
     <title>{% block title %}Base{% endblock %}</title>
   </head>
   <body>
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <nav class="navbar navbar-expand-lg navbar-light " style = "background-color:#75bee9;" >
       <button
         class="navbar-toggler"
         type="button"
@@ -33,8 +33,8 @@
           <a class="nav-item nav-link" id="home" href="/">Home</a>
           <a class="nav-item nav-link" id="logout" href="/logout">Logout</a>
           {% else %}
-          <a class="nav-item nav-link" id="login" href="/login">Login</a>
-          <a class="nav-item nav-link" id="signUp" href="/sign-up">Sign Up</a>
+          <a class="navbar-brand" id="login" href="/login">Login</a>
+          <a class="navbar-brand" id="signUp" href="/sign-up">Sign Up</a>
           {% endif %}
         </div>
       </div>
