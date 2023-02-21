@@ -5,7 +5,7 @@ from . import db
 
 views = Blueprint('views', __name__)
 
-<<<<<<< HEAD
+
 @views.route('/', methods =["GET", "POST"])
 @login_required
 def home():
@@ -22,7 +22,7 @@ def temp():
 @login_required
 def groupings():
     return render_template("roster_create.html", user=current_user)
-=======
+
 @views.route('/', methods=['GET', 'POST'])
 @login_required
 def home():
@@ -37,4 +37,3 @@ def roster_create():
     db.session.commit() # adds to DB
     students = Student_Roster.query.all()
     return render_template("roster_create.html", user=current_user, students=students)
->>>>>>> 5f4f602b4c10e2c05c4bd47a185ba29e9349ec9f
