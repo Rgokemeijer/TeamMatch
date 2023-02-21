@@ -1,1 +1,21 @@
-test
+{% extends "base.html" %} {% block title %}Home{% endblock %}    %}
+{% block content %}
+<h1> This is the Roster page</h1>
+<form method="POST">
+    <button type="submit" class="btn btn-primary">Add Student</button>
+</form>
+<table>
+    <tr>
+      <th>First Name</th>
+      <th>Last Name</th>
+      <th>Email</th>
+    </tr>
+{% for student in students %}
+    <tr>
+      <td>{{student.first_name}}</td>
+      <td>{{student.last_name}}</td>
+      <td>{{student.email}}</td>
+    </tr>
+{% endfor %}
+</table>
+{% endblock %}

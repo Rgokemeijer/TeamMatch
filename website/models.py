@@ -15,3 +15,9 @@ class User(db.Model, UserMixin):
     last_name = db.Column(db.String(150))
     notes = db.relationship('Note') #relationship capital
 
+class Student_Roster(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    first_name = db.Column(db.String(150))
+    last_name = db.Column(db.String(150))
+    email = db.Column(db.String(150))
+
