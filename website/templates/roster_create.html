@@ -9,12 +9,19 @@
       <th>First Name</th>
       <th>Last Name</th>
       <th>Email</th>
+      <th>Options</th>
     </tr>
 {% for student in students %}
     <tr>
       <td>{{student.first_name}}</td>
       <td>{{student.last_name}}</td>
       <td>{{student.email}}</td>
+      <td>
+        <form method="POST">
+          <button type="submit" class="btn btn-primary" name="submit" value="E{{student.email}}">Edit</button>
+          <button type="submit" class="btn btn-primary" name="submit" value="D{{{loop.index}}}">Delete</button>
+        </form>
+      </td>
     </tr>
 {% endfor %}
 </table>

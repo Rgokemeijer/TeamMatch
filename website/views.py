@@ -2,6 +2,8 @@ from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import login_required, current_user
 from .models import Student_Roster
 from . import db
+# for print delete for production
+import sys
 
 views = Blueprint('views', __name__)
 
@@ -20,6 +22,11 @@ def temp():
 @views.route('/create_grouping/upload_roster', methods=['GET', 'POST'])
 @login_required
 def roster_create():
+    if request.method == 'POST' and request.form.get("submit") != None:
+        if request.form.get("submit")[0] == "D":
+            email = request.form.get("submit")[1:]
+            Student_Roster.query.filter_by(email=email).delete()
+        # print(request.form.get("submit"), file=sys.stderr)
     roster = Student_Roster(email="test", first_name="fname", last_name="lastname")
     db.session.add(roster) 
     db.session.commit() # adds to DB
