@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for
 from flask_login import login_required, current_user
-from .models import Student_Roster
+from .models import Student_Roster, Project
 from . import db
 # for print delete for production
 import sys
@@ -11,13 +11,26 @@ views = Blueprint('views', __name__)
 @views.route('/', methods =["GET", "POST"])
 @login_required
 def home():
-    if request.method == 'POST':
-        return redirect(url_for('views.roster_create'))
-    return render_template("home.html", user=current_user) #in template check if current_user is authenticated
+    if request.method == 'POST' and request.form.get("submit") != None:
+        print(request.form.get("submit"), file=sys.stderr)
+        print(type(request.form.get("submit")), file=sys.stderr)
+        if request.form.get("submit") == "CG":
+            print("yup",request.form.get("submit"), file=sys.stderr)
+            project = Project(name="Untitled Grouping")
+            current_user.projects.append(project)
+            # db.session.add(project) 
+            # db.session.commit()
+            return redirect(url_for('views.roster_create'))
+        else:
+            return render_template("home.html", user=current_user)
+
+            # return redirect(url_for('views.roster_create'))
+    
+    return render_template("home.html", user=current_user, projects=current_user.projects) #in template check if current_user is authenticated
 
 @views.route('/test', methods=['GET', 'POST'])
 def temp():
-    return render_template("roster_create.html", user=current_user)
+    return render_template("roster_create.html", user=current_user, project_names=current_user.projects.project_name)
 
 @views.route('/create_grouping/upload_roster', methods=['GET', 'POST'])
 @login_required

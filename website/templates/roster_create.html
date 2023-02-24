@@ -1,6 +1,10 @@
 {% extends "base.html" %} {% block title %}Home{% endblock %}    %}
 {% block content %}
 <h1> This is the Roster page</h1>
+{{project_name}}
+<form method="POST">
+  <button type="submit" class="btn btn-primary">Edit Name</button>
+</form>
 <form method="POST">
     <button type="submit" class="btn btn-primary">Add Student</button>
 </form>
@@ -19,7 +23,7 @@
       <td>
         <form method="POST">
           <button type="submit" class="btn btn-primary" name="submit" value="E{{student.email}}">Edit</button>
-          <button type="submit" class="btn btn-primary" name="submit" value="D{{{loop.index}}}">Delete</button>
+          <button type="submit" class="btn btn-primary" name="submit" value="D{{loop.index}}">Delete</button>
         </form>
       </td>
     </tr>
