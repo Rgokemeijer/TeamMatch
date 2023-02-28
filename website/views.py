@@ -18,13 +18,11 @@ def home():
             print("yup",request.form.get("submit"), file=sys.stderr)
             project = Project(name="Untitled Grouping")
             current_user.projects.append(project)
-            # db.session.add(project) 
-            # db.session.commit()
+            db.session.add(project) 
+            db.session.commit()
             return redirect(url_for('views.roster_create'))
         else:
-            return render_template("home.html", user=current_user)
-
-            # return redirect(url_for('views.roster_create'))
+            return redirect(url_for('views.roster_create'))
     
     return render_template("home.html", user=current_user, projects=current_user.projects) #in template check if current_user is authenticated
 
@@ -39,7 +37,7 @@ def roster_create():
         if request.form.get("submit")[0] == "D":
             email = request.form.get("submit")[1:]
             Student_Roster.query.filter_by(email=email).delete()
-        # print(request.form.get("submit"), file=sys.stderr)
+        print(request.form.get("submit"), file=sys.stderr)
     roster = Student_Roster(email="test", first_name="fname", last_name="lastname")
     db.session.add(roster) 
     db.session.commit() # adds to DB
