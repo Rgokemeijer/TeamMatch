@@ -18,12 +18,12 @@ def home():
             print("yup",request.form.get("submit"), file=sys.stderr)
             grouping = Grouping(name="Untitled Grouping")
             grouping_relation = Grouping_Relationship(role="O", grouping=grouping.id)
+            db.session.add(grouping, grouping_relation) 
+            db.session.commit() # must be before active_grouping call to set id to not None
             current_user.groupings.append(grouping_relation)
             current_user.active_grouping = grouping.id
-            print("groups:", current_user.groupings, file=sys.stderr)
-            print("active_a:", current_user.active_grouping, file=sys.stderr)
-            db.session.add(grouping, grouping_relation) 
             db.session.commit()
+
             return redirect(url_for('views.roster_create'))
         else:
             return redirect(url_for('views.roster_create'))
@@ -43,9 +43,5 @@ def roster_create():
             email = request.form.get("submit")[1:]
             active_grouping.query.filter_by(email=email).delete()
         print(request.form.get("submit"), file=sys.stderr)
-    new_user = User(email="test", first_name="fname", last_name="lastname")
-    active_grouping.student_roster.append(new_user)
-    db.session.add(new_user) 
-    db.session.commit() # adds to DB
     students = active_grouping.student_roster
     return render_template("roster_create.html", user=current_user, students=students)
