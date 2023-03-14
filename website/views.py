@@ -17,6 +17,8 @@ def home():
         if request.form.get("submit") == "CG":
             print("yup",request.form.get("submit"), file=sys.stderr)
             grouping = Grouping(name="Untitled Grouping")
+            # print("yup",request.form.get("submit"), file=sys.stderr)
+
             grouping_relation = Grouping_Relationship(role="O", grouping=grouping.id)
             db.session.add(grouping, grouping_relation) 
             db.session.commit() # must be before active_grouping call to set id to not None
