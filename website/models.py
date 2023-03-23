@@ -15,10 +15,10 @@ class User(db.Model, UserMixin):
     first_name = db.Column(db.String(150))
     last_name = db.Column(db.String(150))
     #notes = db.relationship('Note') #relationship capital
-    contacts = db.relationship('Contacts')
+    student_roster = db.relationship('StudentRoster')
 
-class Contacts(db.Model):
-    __tablename__="contacts"
+class StudentRoster(db.Model):
+    __tablename__="studentroster"
     contactID = db.Column(db.Integer, primary_key=True)
     fName =db.Column(db.String, nullable=False)
     lName =db.Column(db.String, nullable=False)
