@@ -16,12 +16,35 @@ class User(db.Model, UserMixin):
     last_name = db.Column(db.String(150))
     #notes = db.relationship('Note') #relationship capital
     student_roster = db.relationship('StudentRoster')
+    project = db.relationship('Project')
 
 class StudentRoster(db.Model):
     __tablename__="studentroster"
     contactID = db.Column(db.Integer, primary_key=True)
     fName =db.Column(db.String, nullable=False)
     lName =db.Column(db.String, nullable=False)
-    email = db.Column(db.String, nullable=True)
+    email = db.Column(db.String, nullable=False)
     ownerID = db.Column(db.Integer, db.ForeignKey('user.id'))
+    project = db.relationship('Project')
+    
+class Project(db.Model):
+    __tablename__="project"
+    projectID = db.Column(db.Integer, primary_key=True)
+    projectName =db.Column(db.String, nullable=False)
+    mentorfName =db.Column(db.String, nullable=False)
+    mentorlName =db.Column(db.String, nullable=False)
+    projectownerID = db.Column(db.Integer, db.ForeignKey('user.id'))
+    rosterprojectconnect = db.Column(db.Integer, db.ForeignKey('studentroster.ownerID'))
 
+
+#link studentroster to project 1 to many relationship
+#in project foreignkey make ownerc current_user like previously
+#then when student logs in query rosters by their email
+#with all those queries you then can loop through and look at linked projects
+#by querying the 1 to many element
+
+
+#student logs in
+#queries all rosters filtered by their email
+#from that query get ownerid of roster
+#with ownerid query projects

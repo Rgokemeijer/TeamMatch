@@ -9,22 +9,21 @@
     <body>
 	<div class="container">
 		<div class="row"><div class="col-sm-12">
-		<center><h3>Student Roster</h3></center>
+		<center><h3>Projects</h3></center>
 		</div></div>
 	</div>
     </body>
 </html>
- 	<form action="{{ url_for('views.addstudent')}}" method="POST"> 
-		<div class="form-group"><h5><center>Student Details</center></h5></div>
-		
+ 	<form action="{{ url_for('views.addproject')}}" method="POST"> 
+		<div class="form-group"><h5><center>Project Details</center></h5></div>
 		<div class="form-group">
-            <input class="form-control" type="text" name="FirstName" placeholder="First Name">
+            <input class="form-control" type="text" name="Project Name" placeholder="Project Name">
         </div>
 		<div class="form-group">
-            <input class="form-control" type="text" name="LastName" placeholder="Last Name">
+            <input class="form-control" type="text" name="Mentor FirstName" placeholder="Mentor First Name">
         </div>
 		<div class="form-group">
-            <input class="form-control" type="text" name="email" placeholder="Email">
+            <input class="form-control" type="text" name="Mentor LastName" placeholder="Mentor Last Name">
         </div>
 		<div class="form-group">
 			<center><button class="btn btn-primary">Submit</button></center>
@@ -33,16 +32,16 @@
 	
 	<table class="table">
 	<TH>
-	<TD><b>Name</b></TD>
-	<TD><b>Email</b></TD>
+	<TD><b>Project Name</b></TD>
+	<TD><b>Mentor Name</b></TD>
 	<TD></TD>
 	</TH>
 	{% for cl in contList %}
 	<TR>
 	<TD></TD>
-	<TD>{{cl.fName}} {{cl.lName}}</TD>
-	<TD>{{cl.email}}</TD>
-    <TD><form action="{{ url_for('views.deletestudent', mid=cl.contactID)}}" method="POST">
+	<TD>{{cl.projectName}}</TD>
+	<TD>{{cl.mentorfName}} {{cl.mentorlName}}</TD>
+    <TD><form action="{{ url_for('views.deleteproject', mid=cl.projectID)}}" method="POST">
  
 			<button class="btn btn-primary">Delete</button>
 

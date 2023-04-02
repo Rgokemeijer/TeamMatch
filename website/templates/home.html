@@ -1,5 +1,11 @@
-{% extends "base.html" %} {% block title %}Home{% endblock %}    %}
+{% extends "base.html" %} {% block title %}Home{% endblock %}    
 {% block content %}
 <h1> This is the home page</h1>
-<a href="{{ url_for('views.studentroster') }}" class='btn btn-primary'>Roster Create</a>
+<a href="{{ url_for('views.studentroster') }}" class='btn btn-primary'>Update Roster</a>
+<a href="{{ url_for('views.projects') }}" class='btn btn-primary'>Add Projects</a>
+{% for roster in rosters %}
+<form action="{{ url_for('views.studentrankings', mid=roster.ownerID)}}" method="GET">
+ 
+    <button class="btn btn-primary">Ranking for {{roster.ownerID}}</button></form>
+{% endfor %}
 {% endblock %}
