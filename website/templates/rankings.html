@@ -12,17 +12,17 @@
 	{% for proj in projects %}
 	<TR>
 	<TD></TD>
-	<TD>{{proj}}</TD>
+	<TD>{{proj.projectName}}</TD>
 	<TD>
-        <input type="checkbox" id="Rank1" name="Rank1" value="{{proj}}">
+        <input type="checkbox" id="Rank1" name="Rank1" value="{{proj.projectID}}">
         <label for="Rank1"> Rank 1</label>
-        <input type="checkbox" id="Rank2" name="Rank2" value="{{proj}}">
+        <input type="checkbox" id="Rank2" name="Rank2" value="{{proj.projectID}}">
         <label for="Rank2"> Rank 2</label>
-        <input type="checkbox" id="Rank3" name="Rank3" value="{{proj}}">
+        <input type="checkbox" id="Rank3" name="Rank3" value="{{proj.projectID}}">
         <label for="Rank3"> Rank 3</label>
-        <input type="checkbox" id="Rank4" name="Rank4" value="{{proj}}">
+        <input type="checkbox" id="Rank4" name="Rank4" value="{{proj.projectID}}">
         <label for="Rank4"> Rank 4</label>
-        <input type="checkbox" id="Rank5" name="Rank5" value="{{proj}}">
+        <input type="checkbox" id="Rank5" name="Rank5" value="{{proj.projectID}}">
         <label for="Rank5"> Rank 5</label>
       </TD>
     </TR>
