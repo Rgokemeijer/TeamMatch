@@ -26,6 +26,7 @@ class StudentRoster(db.Model):
     email = db.Column(db.String, nullable=False)
     ownerID = db.Column(db.Integer, db.ForeignKey('user.id'))
     project = db.relationship('Project')
+    ranks = db.relationship('Ranks')
     
 class Project(db.Model):
     __tablename__="project"
@@ -35,6 +36,13 @@ class Project(db.Model):
     mentorlName =db.Column(db.String, nullable=False)
     projectownerID = db.Column(db.Integer, db.ForeignKey('user.id'))
     rosterprojectconnect = db.Column(db.Integer, db.ForeignKey('studentroster.ownerID'))
+
+class Ranks(db.Model):
+    rankID = db.Column(db.Integer, primary_key=True)
+    rosterID = db.Column(db.Integer, db.ForeignKey('studentroster.contactID'))
+    rank = db.Column(db.Integer)
+    projectID = db.Column(db.Integer)
+
 
 
 #link studentroster to project 1 to many relationship

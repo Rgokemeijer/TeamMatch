@@ -54,7 +54,7 @@ def deletestudent(mid):
 
 @views.route("/projects")
 @login_required
-def projects():
+def projects():#
     contList=Project.query.filter_by(projectownerID = current_user.id).all()
     cont=Project.query.first()
     return render_template("projects.html", cont=cont, contList=contList, user = current_user)
@@ -92,6 +92,7 @@ def studentrankings(mid):
         rank3 = request.form.get('Rank3')
         rank4 = request.form.get('Rank4')
         rank5 = request.form.get('Rank5')
+        
         print(rank1, rank2, rank3, rank4, rank5)
    
    
@@ -100,7 +101,7 @@ def studentrankings(mid):
     projects = rosters.project
     proj = []
     for item in projects:
-       proj.append(item.projectName)
+       proj.append(item)
     projects = []
     
     return render_template("rankings.html", projects = proj, user = current_user)
