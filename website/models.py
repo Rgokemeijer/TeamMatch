@@ -25,6 +25,7 @@ class StudentRoster(db.Model):
     lName =db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=False)
     ownerID = db.Column(db.Integer, db.ForeignKey('user.id'))
+    ownerEmail = db.Column(db.String, nullable=False)
     project = db.relationship('Project')
     ranks = db.relationship('Ranks')
     

@@ -4,8 +4,9 @@
 <a href="{{ url_for('views.studentroster') }}" class='btn btn-primary'>Update Roster</a>
 <a href="{{ url_for('views.projects') }}" class='btn btn-primary'>Add Projects</a>
 {% for roster in rosters %}
-<form action="{{ url_for('views.studentrankings', mid=roster.ownerID)}}" method="GET">
+<form action="{{ url_for('views.studentrankings', mid=roster.ownerID, conID = roster.contactID)}}" method="GET">
  
-    <button class="btn btn-primary">Ranking for {{roster.ownerID}}</button></form>
+    <button class="btn btn-primary">Ranking for {{roster.ownerEmail}}</button></form>
 {% endfor %}
+<a href="{{ url_for('views.createGroups') }}" class='btn btn-primary'>Create Groups</a>
 {% endblock %}

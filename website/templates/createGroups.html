@@ -1,0 +1,22 @@
+{% extends "base.html" %} {% block title %}Home{% endblock %}    
+{% block content %}
+<h1> Create Groups</h1>
+<button class="btn btn-primary">Create Groups</button>
+<table class="table">
+	<TH>
+	<TD><b>Student Email</b></TD>
+	<TD><b>Project Name</b></TD>
+    <TD><b>Ranking</b></TD>
+	<TD></TD>
+	</TH>
+    <form method="POST">
+	{% for rank in rankings %}
+	<TR>
+        <TD></TD>
+        <TD>{{rank[0]}}</TD>
+        <TD>{{rank[1]}}</TD>
+        <TD>{{rank[2]}}</TD>
+        </TR>
+        {% endfor %}
+        </table>
+{% endblock %}

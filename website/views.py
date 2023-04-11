@@ -1,6 +1,6 @@
-from flask import Blueprint, render_template, request, redirect, url_for
+from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
-from .models import StudentRoster, Project
+from .models import StudentRoster, Project, Ranks
 from . import db
 views = Blueprint('views', __name__)
 
@@ -35,7 +35,7 @@ def addstudent():
     lName=request.form.get("LastName")
     email=request.form.get("email")
     #Pass on the local values to the corresponfding model
-    student = StudentRoster( fName=fName, lName=lName,email=email, ownerID = current_user.id)
+    student = StudentRoster( fName=fName, lName=lName,email=email, ownerID = current_user.id, ownerEmail = current_user.email)
     db.session.add(student)
     db.session.commit()
     cont=StudentRoster.query.filter_by(email=email).first()
@@ -83,27 +83,54 @@ def deleteproject(mid):
         db.session.commit()
     return redirect(url_for('views.projects'))
 
-@views.route("/studentrankings/<mid>", methods = ['GET', 'POST']) 
+@views.route("/studentrankings/<mid>/<conID>", methods = ['GET', 'POST']) 
 @login_required
-def studentrankings(mid):
+def studentrankings(mid, conID):
     if request.method == 'POST':
         rank1 = request.form.get('Rank1')
         rank2 = request.form.get('Rank2')
         rank3 = request.form.get('Rank3')
         rank4 = request.form.get('Rank4')
-        rank5 = request.form.get('Rank5')
-        
-        print(rank1, rank2, rank3, rank4, rank5)
-   
-   
-    rosters = StudentRoster.query.filter_by(ownerID=mid).first()
-  
+        rank5 = request.form.get('Rank5')    
+        #print(rank1, rank2, rank3, rank4, rank5)
+        rankOne = Ranks(rosterID = conID, rank=1, projectID=rank1)
+        db.session.add(rankOne)
+        db.session.commit()
+        rankTwo = Ranks(rosterID = conID, rank=2, projectID=rank2)
+        db.session.add(rankTwo)
+        db.session.commit()
+        rankThree = Ranks(rosterID = conID, rank=3, projectID=rank3)
+        db.session.add(rankThree)
+        db.session.commit()
+        rankFour = Ranks(rosterID = conID, rank=4, projectID=rank4)
+        db.session.add(rankFour)
+        db.session.commit()
+        rankFive = Ranks(rosterID = conID, rank=5, projectID=rank5)
+        db.session.add(rankFive)
+        db.session.commit()
+        flash('Submitted Rankings', category = 'success')
+        return redirect(url_for('views.home'))
+    rosters = StudentRoster.query.filter_by(ownerID=mid).first() 
     projects = rosters.project
     proj = []
     for item in projects:
        proj.append(item)
     projects = []
-    
     return render_template("rankings.html", projects = proj, user = current_user)
 
-#now i need to get rankings into database to be used
+@views.route("/createGroups", methods = ['GET', 'POST']) 
+@login_required
+def createGroups():
+    rosters = StudentRoster.query.filter_by(ownerID=current_user.id).all()
+    stud_proj_rank = []
+    for roster in rosters:
+        ranks = roster.ranks
+        for item in ranks:
+            project = Project.query.filter_by(projectID = item.projectID).first()
+            projName = project.projectName
+            stud_proj_rank.append([roster.email, projName, item.rank])
+    return render_template("createGroups.html", rankings = stud_proj_rank, user=current_user)
+
+
+#currently someone can resubmit rankings and it just adds more 
+#instead of overriding
