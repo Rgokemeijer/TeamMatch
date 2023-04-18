@@ -12,13 +12,8 @@ def home():
 
 @views.route('/help')
 @login_required
-def h3lp():
+def help():
     return render_template("help.html", user=current_user) #in template check if current_user is authenticated
-
-@views.route('/test', methods=['GET', 'POST'])
-def temp():
-    return render_template("roster_create.html", user=current_user)
-
 
 @views.route("/studentroster")
 @login_required
@@ -54,7 +49,7 @@ def deletestudent(mid):
 
 @views.route("/projects")
 @login_required
-def projects():#
+def projects():
     contList=Project.query.filter_by(projectownerID = current_user.id).all()
     cont=Project.query.first()
     return render_template("projects.html", cont=cont, contList=contList, user = current_user)
@@ -70,9 +65,10 @@ def addproject():
     project = Project( projectName = projectName, mentorfName=mentorfName, mentorlName=mentorlName, projectownerID = current_user.id, rosterprojectconnect = current_user.id)
     db.session.add(project)
     db.session.commit()
-    cont=Project.query.filter_by(projectownerID=current_user.id).first()
+    # query all projects that are owned by this user
+    # cont=Project.query.filter_by(projectownerID=current_user.id).first()
     contList=Project.query.filter_by(projectownerID=current_user.id).all()
-    return render_template("projects.html",cont=cont, contList=contList, user = current_user) 
+    return render_template("projects.html", contList=contList, user = current_user) 
 
 @views.route("/deleteproject/<mid>", methods=["POST"]) 
 @login_required
@@ -123,12 +119,12 @@ def studentrankings(mid, conID):
 def createGroups():
     rosters = StudentRoster.query.filter_by(ownerID=current_user.id).all()
     stud_proj_rank = []
-    for roster in rosters:
-        ranks = roster.ranks
+    for student in rosters:
+        ranks = student.ranks
         for item in ranks:
             project = Project.query.filter_by(projectID = item.projectID).first()
             projName = project.projectName
-            stud_proj_rank.append([roster.email, projName, item.rank])
+            stud_proj_rank.append([student.email, projName, item.rank])
     return render_template("createGroups.html", rankings = stud_proj_rank, user=current_user)
 
 
