@@ -82,37 +82,19 @@ def deleteproject(mid):
 @views.route("/studentrankings/<mid>/<conID>", methods = ['GET', 'POST']) 
 @login_required
 def studentrankings(mid, conID):
+    # there will be only one roster with this ID
+    rosters = StudentRoster.query.filter_by(ownerID=mid).first()
+    projects = rosters.project
     if request.method == 'POST':
-        rank1 = request.form.get('Rank1')
-        rank2 = request.form.get('Rank2')
-        rank3 = request.form.get('Rank3')
-        rank4 = request.form.get('Rank4')
-        rank5 = request.form.get('Rank5')    
-        #print(rank1, rank2, rank3, rank4, rank5)
-        rankOne = Ranks(rosterID = conID, rank=1, projectID=rank1)
-        db.session.add(rankOne)
-        db.session.commit()
-        rankTwo = Ranks(rosterID = conID, rank=2, projectID=rank2)
-        db.session.add(rankTwo)
-        db.session.commit()
-        rankThree = Ranks(rosterID = conID, rank=3, projectID=rank3)
-        db.session.add(rankThree)
-        db.session.commit()
-        rankFour = Ranks(rosterID = conID, rank=4, projectID=rank4)
-        db.session.add(rankFour)
-        db.session.commit()
-        rankFive = Ranks(rosterID = conID, rank=5, projectID=rank5)
-        db.session.add(rankFive)
+        stud_ranks = []
+        for i in range(len(projects)):
+            proj_id = request.form.get(f'rank{i}') # get which project ranbked first
+            stud_ranks_obj = Ranks(rosterID = conID, rank=1, projectID=proj_id)
+            db.session.add(stud_ranks_obj)
         db.session.commit()
         flash('Submitted Rankings', category = 'success')
         return redirect(url_for('views.home'))
-    rosters = StudentRoster.query.filter_by(ownerID=mid).first() 
-    projects = rosters.project
-    proj = []
-    for item in projects:
-       proj.append(item)
-    projects = []
-    return render_template("rankings.html", projects = proj, user = current_user)
+    return render_template("rankings.html", projects = projects, num_projects=len(projects), user = current_user)
 
 @views.route("/createGroups", methods = ['GET', 'POST']) 
 @login_required
@@ -130,3 +112,4 @@ def createGroups():
 
 #currently someone can resubmit rankings and it just adds more 
 #instead of overriding
+#print(item.project)
