@@ -18,6 +18,7 @@ class User(db.Model, UserMixin):
     student_roster = db.relationship('StudentRoster')
     project = db.relationship('Project')
 
+# each user has a single student roster row
 class StudentRoster(db.Model):
     __tablename__="studentroster"
     contactID = db.Column(db.Integer, primary_key=True)

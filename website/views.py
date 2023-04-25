@@ -86,11 +86,20 @@ def studentrankings(mid, conID):
     rosters = StudentRoster.query.filter_by(ownerID=mid).first()
     projects = rosters.project
     if request.method == 'POST':
-        stud_ranks = []
-        for i in range(len(projects)):
-            proj_id = request.form.get(f'rank{i}') # get which project ranbked first
-            stud_ranks_obj = Ranks(rosterID = conID, rank=1, projectID=proj_id)
-            db.session.add(stud_ranks_obj)
+        for i in range(1,1+len(projects)):
+            proj_id = request.form.get(f'Rank{i}') # get which project ranked first
+            print(proj_id)
+            if proj_id is None:
+                flash('Please rank all projects once', category = 'error')
+                return render_template("rankings.html", projects = projects, num_projects=len(projects), user = current_user)
+            #check if a ranking has been submitted
+            cur_ranking = Ranks.query.filter_by(rosterID=conID, rank=i).first()
+            if cur_ranking is None:
+                # if it has not create one
+                stud_ranks_obj = Ranks(rosterID = conID, rank=i, projectID=proj_id)
+                db.session.add(stud_ranks_obj)
+            else: #else update the ranking
+                cur_ranking.projectID = proj_id
         db.session.commit()
         flash('Submitted Rankings', category = 'success')
         return redirect(url_for('views.home'))
@@ -103,6 +112,7 @@ def createGroups():
     stud_proj_rank = []
     for student in rosters:
         ranks = student.ranks
+
         for item in ranks:
             project = Project.query.filter_by(projectID = item.projectID).first()
             projName = project.projectName
