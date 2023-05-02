@@ -27,7 +27,6 @@ class StudentRoster(db.Model):
     email = db.Column(db.String, nullable=False)
     ownerID = db.Column(db.Integer, db.ForeignKey('user.id'))
     ownerEmail = db.Column(db.String, nullable=False)
-    project = db.relationship('Project')
     ranks = db.relationship('Ranks')
     
 class Project(db.Model):
@@ -37,7 +36,6 @@ class Project(db.Model):
     mentorfName =db.Column(db.String, nullable=False)
     mentorlName =db.Column(db.String, nullable=False)
     projectownerID = db.Column(db.Integer, db.ForeignKey('user.id'))
-    rosterprojectconnect = db.Column(db.Integer, db.ForeignKey('studentroster.ownerID'))
 
 class Ranks(db.Model):
     rankID = db.Column(db.Integer, primary_key=True)

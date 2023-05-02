@@ -42,9 +42,11 @@ def addstudent():
 @views.route("/deletestudent/<mid>", methods=["POST"]) 
 @login_required
 def deletestudent(mid):
-    merch = StudentRoster.query.filter_by(contactID=mid).first()
-    if merch:
-        db.session.delete(merch)
+    student = StudentRoster.query.filter_by(contactID=mid).first()
+    if student:
+        for rank in student.ranks:
+            db.session.delete(rank)
+        db.session.delete(student)
         db.session.commit()
     return redirect(url_for('views.studentroster'))
 
@@ -64,7 +66,7 @@ def addproject():
     mentorlName=request.form.get("Mentor LastName")
     projectName=request.form.get("Project Name")
     #Pass on the local values to the corresponfding model
-    project = Project( projectName = projectName, mentorfName=mentorfName, mentorlName=mentorlName, projectownerID = current_user.id, rosterprojectconnect = current_user.id)
+    project = Project( projectName = projectName, mentorfName=mentorfName, mentorlName=mentorlName, projectownerID = current_user.id)
     db.session.add(project)
     db.session.commit()
     # query all projects that are owned by this user
@@ -75,9 +77,9 @@ def addproject():
 @views.route("/deleteproject/<mid>", methods=["POST"]) 
 @login_required
 def deleteproject(mid):
-    merch = Project.query.filter_by(projectID=mid).first()
-    if merch:
-        db.session.delete(merch)
+    project = Project.query.filter_by(projectID=mid).first()
+    if project:
+        db.session.delete(project)
         db.session.commit()
     return redirect(url_for('views.projects'))
 
