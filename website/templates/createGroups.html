@@ -4,6 +4,22 @@
 <button class="btn btn-primary">Create Groups</button>
 <table class="table">
 	<TH>
+	<TD><b>Project Name</b></TD>
+	<TD><b>Students</b></TD>
+	<TD></TD>
+	</TH>
+    <form method="POST">
+	{% for group, students in groups.items() %}
+	<TR>
+        <TD></TD>
+        <TD>{{group}}</TD>
+        <TD>{{', '.join(students)}}</TD>
+        </TR>
+        {% endfor %}
+        </table>
+<!--
+<table class="table">
+	<TH>
 	<TD><b>Student Email</b></TD>
 	<TD><b>Project Name</b></TD>
     <TD><b>Ranking</b></TD>
@@ -19,4 +35,5 @@
         </TR>
         {% endfor %}
         </table>
+    -->
 {% endblock %}

@@ -2,6 +2,8 @@ from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from .models import StudentRoster, Project, Ranks
 from . import db
+import numpy as np
+from .algorithm import algo
 views = Blueprint('views', __name__)
 
 @views.route('/')
@@ -88,7 +90,7 @@ def studentrankings(mid, conID):
     if request.method == 'POST':
         for i in range(1,1+len(projects)):
             proj_id = request.form.get(f'Rank{i}') # get which project ranked first
-            print(proj_id)
+            #print(proj_id)
             if proj_id is None:
                 flash('Please rank all projects once', category = 'error')
                 return render_template("rankings.html", projects = projects, num_projects=len(projects), user = current_user)
@@ -108,16 +110,51 @@ def studentrankings(mid, conID):
 @views.route("/createGroups", methods = ['GET', 'POST']) 
 @login_required
 def createGroups():
-    rosters = StudentRoster.query.filter_by(ownerID=current_user.id).all()
+    rosters = StudentRoster.query.filter_by(ownerID=current_user.id).all() 
+    projects = rosters[0].project
+    ranks = np.zeros((len(rosters), len(projects)))
+    #orders project ids to add to and search for later in ranks array
+    proj_index_lookup = []
+    groups = {} #dictionary to pair project with students later
+    for project in projects:
+        proj_index_lookup.append(project.projectID)
+        groups[project.projectName] = []
+    proj_index_lookup.sort()
+    #orders studentroster ids add to and search for later in ranks array
+    student_index_lookup = []
+    for student in rosters:
+        student_index_lookup.append(student.contactID)
+    student_index_lookup.sort()
+    #put all rankings into array
+    for student in rosters:
+        student_rankings = student.ranks
+        for rank in student_rankings:
+            ranks[student_index_lookup.index(student.contactID)][proj_index_lookup.index(rank.projectID)] = rank.rank - 1 #if it needs to start at 0 then have -1 
+
+    single_array_ranks = ranks.flatten() #turns 2d array to 1d
+    result = algo(single_array_ranks, len(rosters), len(projects), 3)
+    print(result)
+    i = 0
+    for student in result:
+        group_num = np.where(student == 1)
+        group_num = group_num[0][0] #get what group num they are in (indexed according to proj_index_lookup)
+        proj = Project.query.filter_by(projectID = proj_index_lookup[group_num]).first()
+        proj_name = proj.projectName
+        stud = StudentRoster.query.filter_by(contactID = student_index_lookup[i]).first()
+        stud_name = stud.fName + " " + stud.lName
+        i += 1
+        groups[proj_name].append(stud_name)
+    
+    #show student rankings
     stud_proj_rank = []
     for student in rosters:
         ranks = student.ranks
-
         for item in ranks:
             project = Project.query.filter_by(projectID = item.projectID).first()
             projName = project.projectName
-            stud_proj_rank.append([student.email, projName, item.rank])
-    return render_template("createGroups.html", rankings = stud_proj_rank, user=current_user)
+            stud_proj_rank.append([student.email, projName, item.rank]) 
+    
+    return render_template("createGroups.html", rankings = stud_proj_rank, groups = groups, user=current_user)
 
 
 #currently someone can resubmit rankings and it just adds more 

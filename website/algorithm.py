@@ -32,9 +32,9 @@ def algo(ranks, nstud, ngroup, gsize):
 
     # print(A.dot(result.x))
     print(result)
-    print(result.x.reshape(nstud, ngroup))
-    print(ranks.reshape(nstud, ngroup))
-
+    #print(result.x.reshape(nstud, ngroup))
+    #print(ranks.reshape(nstud, ngroup))
+    return result.x.reshape(nstud, ngroup)
 if __name__ == '__main__':
     nstud = 9
     nrank = 3
@@ -46,7 +46,7 @@ if __name__ == '__main__':
     # Generate a permutation of integers from 1-5 for each row
     for i in range(nstud):
         ranks[i*nrank:i*nrank+nrank] = np.random.permutation(nrank)
-
+    
     algo(ranks, nstud, ngroup, gsize)
 
 # import numpy as np
