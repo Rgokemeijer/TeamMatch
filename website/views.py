@@ -110,19 +110,25 @@ def studentrankings(mid, conID):
 @views.route("/createGroups", methods = ['GET', 'POST']) 
 @login_required
 def createGroups():
+    # Returns a roster of all students who are in this grouping
     rosters = StudentRoster.query.filter_by(ownerID=current_user.id).all() 
+    # each student roster has the same list of projects that
+    # get one of them
     projects = rosters[0].project
+    # this will populate with each students ranks of the projects
     ranks = np.zeros((len(rosters), len(projects)))
     #orders project ids to add to and search for later in ranks array
     proj_index_lookup = []
     groups = {} #dictionary to pair project with students later
     for project in projects:
         proj_index_lookup.append(project.projectID)
+        # this is where students will be placed when locked into a group
         groups[project.projectName] = []
     proj_index_lookup.sort()
-    #orders studentroster ids add to and search for later in ranks array
+    #orders studentroster ids to search for later in ranks array
     student_index_lookup = []
     for student in rosters:
+        # get teh students ID from the student roster row
         student_index_lookup.append(student.contactID)
     student_index_lookup.sort()
     #put all rankings into array
@@ -132,7 +138,7 @@ def createGroups():
             ranks[student_index_lookup.index(student.contactID)][proj_index_lookup.index(rank.projectID)] = rank.rank - 1 #if it needs to start at 0 then have -1 
 
     single_array_ranks = ranks.flatten() #turns 2d array to 1d
-    result = algo(single_array_ranks, len(rosters), len(projects), 3)
+    result = algo(single_array_ranks, len(rosters), len(projects))
     print(result)
     i = 0
     for student in result:

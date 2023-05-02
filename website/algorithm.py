@@ -1,12 +1,15 @@
 import numpy as np
+import math
 from scipy.optimize import LinearConstraint, milp, Bounds
 from scipy.sparse import coo_array
 
-def algo(ranks, nstud, ngroup, gsize):
+def algo(ranks, nstud, ngroup):
     # nstud = 9
     # nrank = 3
     # ngroup = 3
     # gsize = 3
+    min_g_size = nstud//ngroup
+    max_g_size = math.ceil(nstud/ngroup)
 
     # these arrays are used again as parameters later
     arange = np.arange(ngroup * nstud)
@@ -22,8 +25,9 @@ def algo(ranks, nstud, ngroup, gsize):
     # create constraint for group size
     A_i = np.tile(np.arange(ngroup), nstud)
     A = coo_array((ones, (A_i, arange)))
-    lb_ub = np.full(ngroup, gsize)
-    group_size = LinearConstraint(A, lb_ub, lb_ub)
+    lb = np.full(ngroup, min_g_size)
+    ub = np.full(ngroup, max_g_size)
+    group_size = LinearConstraint(A, lb, ub)
 
     # group_size
     constraints = {students_in_one_group, group_size}
@@ -35,19 +39,19 @@ def algo(ranks, nstud, ngroup, gsize):
     #print(result.x.reshape(nstud, ngroup))
     #print(ranks.reshape(nstud, ngroup))
     return result.x.reshape(nstud, ngroup)
+
 if __name__ == '__main__':
-    nstud = 9
-    nrank = 3
-    ngroup = 3
-    gsize = 3
+    nstud = 21
+    # nrank = 3
+    ngroup = 5
 
     # ranks: C
-    ranks = np.zeros((nstud * nrank))
+    ranks = np.zeros((nstud * ngroup))
     # Generate a permutation of integers from 1-5 for each row
     for i in range(nstud):
-        ranks[i*nrank:i*nrank+nrank] = np.random.permutation(nrank)
+        ranks[i*ngroup:i*ngroup+ngroup] = np.random.permutation(ngroup)
     
-    algo(ranks, nstud, ngroup, gsize)
+    print(algo(ranks, nstud, ngroup))
 
 # import numpy as np
 # from scipy.optimize import differential_evolution, LinearConstraint
