@@ -79,6 +79,9 @@ def addproject():
 def deleteproject(mid):
     project = Project.query.filter_by(projectID=mid).first()
     if project:
+        ranks = Ranks.query.filter_by(projectID=project.projectID).all()
+        for rank in ranks:
+            db.session.delete(rank)
         db.session.delete(project)
         db.session.commit()
     return redirect(url_for('views.projects'))
