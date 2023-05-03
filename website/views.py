@@ -117,6 +117,9 @@ def studentrankings(mid, conID):
 def createGroups():
     # Returns a roster of all students who are in this grouping
     rosters = StudentRoster.query.filter_by(ownerID=current_user.id).all() 
+    if len(rosters) == 0:
+        flash("Your roster is empty", category='error')
+        return redirect(url_for('views.home'))
     # each student roster has the same list of projects that
     # get one of them
     owner = User.query.filter_by(id=current_user.id).first()
