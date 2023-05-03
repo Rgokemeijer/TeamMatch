@@ -17,23 +17,23 @@
         </TR>
         {% endfor %}
         </table>
-<!--
+Rankings by student
 <table class="table">
 	<TH>
 	<TD><b>Student Email</b></TD>
-	<TD><b>Project Name</b></TD>
-    <TD><b>Ranking</b></TD>
-	<TD></TD>
+    {% for project in projects %}
+	<TD><b>{{project.projectName}}</b></TD>
+    {% endfor %}
 	</TH>
     <form method="POST">
-	{% for rank in rankings %}
-	<TR>
+	{% for student, ranks in rankings.items() %}
+    <TR>
         <TD></TD>
-        <TD>{{rank[0]}}</TD>
-        <TD>{{rank[1]}}</TD>
-        <TD>{{rank[2]}}</TD>
-        </TR>
+        <TD>{{student}}</TD>
+        {% for rank in ranks %}
+            <TD>{{rank}}</TD>
         {% endfor %}
-        </table>
-    -->
+    </TR>
+    {% endfor %}
+    </table>
 {% endblock %}

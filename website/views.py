@@ -128,7 +128,7 @@ def createGroups():
     ranks = np.zeros((len(rosters), len(projects)))
     #orders project ids to add to and search for later in ranks array
     proj_index_lookup = []
-    groups = {} #dictionary to pair project with students later
+    groups = {} #dictionary, project name goes to list of students
     for project in projects:
         proj_index_lookup.append(project.projectID)
         # this is where students will be placed when locked into a group
@@ -161,15 +161,17 @@ def createGroups():
         groups[proj_name].append(stud_name)
     
     #show student rankings
-    stud_proj_rank = []
-    for student in rosters:
-        ranks = student.ranks
-        for item in ranks:
-            project = Project.query.filter_by(projectID = item.projectID).first()
-            projName = project.projectName
-            stud_proj_rank.append([student.email, projName, item.rank]) 
+    stud_ranks = {}
+    for i, student in enumerate(rosters):
+        stud_ranks[student.email] = []
+        for project in projects:
+            rank = Ranks.query.filter_by(projectID = project.projectID, rosterID=student.contactID).first()
+            if rank is not None:
+                stud_ranks[student.email].append(rank.rank)
+            else:
+                stud_ranks[student.email].append("N/A") 
     
-    return render_template("createGroups.html", rankings = stud_proj_rank, groups = groups, user=current_user)
+    return render_template("createGroups.html", rankings = stud_ranks, projects=projects, groups = groups, user=current_user)
 
 
 #currently someone can resubmit rankings and it just adds more 
