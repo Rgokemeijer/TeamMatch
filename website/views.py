@@ -1,6 +1,6 @@
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
-from .models import StudentRoster, Project, Ranks
+from .models import StudentRoster, Project, Ranks, User
 from . import db
 import numpy as np
 from .algorithm import algo
@@ -87,8 +87,8 @@ def deleteproject(mid):
 @login_required
 def studentrankings(mid, conID):
     # there will be only one roster with this ID
-    rosters = StudentRoster.query.filter_by(ownerID=mid).first()
-    projects = rosters.project
+    owner = User.query.filter_by(id=mid).first()
+    projects = owner.project
     if request.method == 'POST':
         for i in range(1,1+len(projects)):
             proj_id = request.form.get(f'Rank{i}') # get which project ranked first
