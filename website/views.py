@@ -163,13 +163,14 @@ def createGroups():
     #show student rankings
     stud_ranks = {}
     for i, student in enumerate(rosters):
-        stud_ranks[student.email] = []
+        stud_name = student.fName + " " + student.lName
+        stud_ranks[stud_name] = []
         for project in projects:
             rank = Ranks.query.filter_by(projectID = project.projectID, rosterID=student.contactID).first()
             if rank is not None:
-                stud_ranks[student.email].append(rank.rank)
+                stud_ranks[stud_name].append(rank.rank)
             else:
-                stud_ranks[student.email].append("N/A") 
+                stud_ranks[stud_name].append("N/A") 
     
     return render_template("createGroups.html", rankings = stud_ranks, projects=projects, groups = groups, user=current_user)
 
