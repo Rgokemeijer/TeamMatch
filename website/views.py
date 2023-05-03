@@ -116,7 +116,8 @@ def createGroups():
     rosters = StudentRoster.query.filter_by(ownerID=current_user.id).all() 
     # each student roster has the same list of projects that
     # get one of them
-    projects = rosters[0].project
+    owner = User.query.filter_by(id=current_user.id).first()
+    projects = owner.project
     # this will populate with each students ranks of the projects
     ranks = np.zeros((len(rosters), len(projects)))
     #orders project ids to add to and search for later in ranks array
