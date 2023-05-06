@@ -125,7 +125,7 @@ def createGroups():
     owner = User.query.filter_by(id=current_user.id).first()
     projects = owner.project
     # this will populate with each students ranks of the projects
-    ranks = np.full((len(rosters), len(projects)), len(projects))
+    ranks = np.full((len(rosters), len(projects)), (len(projects)+1)**2)
     #orders project ids to add to and search for later in ranks array
     proj_index_lookup = []
     groups = {} #dictionary, project name goes to list of students
@@ -144,7 +144,7 @@ def createGroups():
     for student in rosters:
         student_rankings = student.ranks
         for rank in student_rankings:
-            ranks[student_index_lookup.index(student.contactID)][proj_index_lookup.index(rank.projectID)] = rank.rank - 1 #if it needs to start at 0 then have -1 
+            ranks[student_index_lookup.index(student.contactID)][proj_index_lookup.index(rank.projectID)] = rank.rank**2  #if it needs to start at 0 then have -1 
 
     single_array_ranks = ranks.flatten() #turns 2d array to 1d
     result = algo(single_array_ranks, len(rosters), len(projects))

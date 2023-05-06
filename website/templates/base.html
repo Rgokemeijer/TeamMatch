@@ -33,8 +33,10 @@
           <a class="navbar-brand" id="home" href="/">Home</a>
           <a class="navbar-brand" id="logout" href="/logout">Log Out</a>
           <a class="navbar-brand" id="help" href="/help">Help</a>
+          <a class="navbar-text" id="loggedInUser", style="direction: rtl">Logged in as {{ user.first_name }} {{ user.last_name }}</a>
           <img src="https://www.sandiego.edu/brand/images/logos/master-secondary/usd-logo-secondary-2c.png"
             alt="test" style = "width: 250px; height: 45px;">
+
           {% else %}
           <a class="navbar-brand" id="login" href="/login">Log In</a>
           <a class="navbar-brand" id="signUp" href="/sign-up">Sign Up</a>
