@@ -35,7 +35,7 @@ def algo(ranks, nstud, ngroup):
     result = milp(ranks, bounds=bounds, integrality=ones, constraints=constraints)
 
     # print(A.dot(result.x))
-    print(result)
+    #print(result)
     #print(result.x.reshape(nstud, ngroup))
     #print(ranks.reshape(nstud, ngroup))
     return result.x.reshape(nstud, ngroup)

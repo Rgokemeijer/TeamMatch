@@ -145,10 +145,9 @@ def createGroups():
         student_rankings = student.ranks
         for rank in student_rankings:
             ranks[student_index_lookup.index(student.contactID)][proj_index_lookup.index(rank.projectID)] = rank.rank - 1 #if it needs to start at 0 then have -1 
-
+    
     single_array_ranks = ranks.flatten() #turns 2d array to 1d
     result = algo(single_array_ranks, len(rosters), len(projects))
-    print(result)
     i = 0
     for student in result:
         group_num = np.where(student == 1)
