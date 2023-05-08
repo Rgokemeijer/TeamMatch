@@ -1,12 +1,28 @@
-{% extends "base.html" %} {% block title %}Home{% endblock %}    
+{% extends "base.html" %}
+
+{% block title %}
+  Home
+{% endblock %}
+
 {% block content %}
-<h1> This is the home page</h1>
-<a href="{{ url_for('views.studentroster') }}" class='btn btn-primary'>Update Roster</a>
-<a href="{{ url_for('views.projects') }}" class='btn btn-primary'>Add Projects</a>
-{% for roster in rosters %}
-<form action="{{ url_for('views.studentrankings', mid=roster.ownerID, conID = roster.contactID)}}" method="GET">
- 
-    <button class="btn btn-primary">Ranking for {{roster.ownerEmail}}</button></form>
-{% endfor %}
-<a href="{{ url_for('views.createGroups') }}" class='btn btn-primary'>Create Groups</a>
+  <h1>This is the home page</h1>
+  <div class="button-container">
+    <a href="{{ url_for('views.studentroster') }}" class="btn btn-primary">Update Roster</a>
+    <a href="{{ url_for('views.projects') }}" class="btn btn-primary">Add Projects</a>
+    <a href="{{ url_for('views.createGroups') }}" class="btn btn-primary">Create Groups</a>
+    <p>Use these buttons if you want to create your own groupings. Otherwise, you can submit rankings for any groupings you were added to below.</p>
+  </div>
+
+  <div class="ranking-container">
+    {% if rosters %}
+      <h2>Rankings</h2>
+      {% for roster in rosters %}
+        <form action="{{ url_for('views.studentrankings', mid=roster.ownerID, conID=roster.contactID) }}" method="GET">
+          <button class="btn btn-primary">Ranking for {{ roster.ownerEmail }}</button>
+        </form>
+      {% endfor %}
+    {% else %}
+      <p>You have not been asked to rank any projects.</p>
+    {% endif %}
+  </div>
 {% endblock %}
