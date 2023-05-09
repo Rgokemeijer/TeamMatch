@@ -1,29 +1,12 @@
 from . import db
 from flask_login import UserMixin
 from sqlalchemy.sql import func
-from sqlalchemy import Table
-from sqlalchemy.orm import Mapped
-# from integer import Integer
 
-# class Note(db.Model):
-#     id = db.Column(db.Integer, primary_key=True)
-#     data = db.Column(db.String(10000))
-#     date = db.Column(db.DateTime(timezone=True), default=func.now())
-#     user_id = db.Column(db.Integer, db.ForeignKey('user.id')) #foreign key lowercase, 1 to many relationship (1 user many notes)
-
-grouping_user = Table(
-    "grouping_user",
-    db.Model.metadata,
-    db.Column('id', db.Integer, primary_key=True),
-    db.Column("grouping_id", db.ForeignKey("grouping.id")),
-    db.Column("user_id", db.ForeignKey("user.id"))
-)
-
-class Grouping_Relationship(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    role = db.Column(db.String(15)) # Student, Organizer, Advisor
-    grouping = db.Column(db.Integer(), db.ForeignKey("grouping.id"))
-    user = db.Column(db.Integer(), db.ForeignKey("user.id"))
+#class Note(db.Model):
+ #   id = db.Column(db.Integer, primary_key=True)
+  #  data = db.Column(db.String(10000))
+   # date = db.Column(db.DateTime(timezone=True), default=func.now())
+    #user_id = db.Column(db.Integer, db.ForeignKey('user.id')) #foreign key lowercase, 1 to many relationship (1 user many notes)
 
 class User(db.Model, UserMixin):
     __tablename__ = "user"
@@ -32,35 +15,45 @@ class User(db.Model, UserMixin):
     password = db.Column(db.String(150))
     first_name = db.Column(db.String(150))
     last_name = db.Column(db.String(150))
-    # notes = db.relationship('Note') #relationship capital
-    groupings = db.relationship("groupings", secondary=grouping_user, backref='User') #relationship capital
-    active_grouping = db.Column(db.Integer(), db.ForeignKey("grouping.id"))
+    #notes = db.relationship('Note') #relationship capital
+    student_roster = db.relationship('StudentRoster')
+    project = db.relationship('Project')
 
-class Grouping(db.Model):
-    __tablename__ = "grouping"
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(150))
-    student_roster = db.relationship('student_roster', secondary=grouping_user, backref='Grouping')
-    group_list = db.relationship("Group")
-    creation_step = db.Column(db.Integer)
-    student_form_responses = db.relationship("Student_Form")
-    grouping_settings = db.relationship("Grouping_Settings")
+# each user has a single student roster row
+class StudentRoster(db.Model):
+    __tablename__="studentroster"
+    contactID = db.Column(db.Integer, primary_key=True)
+    fName =db.Column(db.String, nullable=False)
+    lName =db.Column(db.String, nullable=False)
+    email = db.Column(db.String, nullable=False)
+    ownerID = db.Column(db.Integer, db.ForeignKey('user.id'))
+    ownerEmail = db.Column(db.String, nullable=False)
+    ranks = db.relationship('Ranks')
+    
+class Project(db.Model):
+    __tablename__="project"
+    projectID = db.Column(db.Integer, primary_key=True)
+    projectName =db.Column(db.String, nullable=False)
+    mentorfName =db.Column(db.String, nullable=False)
+    mentorlName =db.Column(db.String, nullable=False)
+    projectownerID = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-class Group(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(150))
-    grouping = db.Column(db.Integer, db.ForeignKey("grouping.id"))
-    spots = db.Column(db.Integer)
-    # cur_students = db.relationship("User") Do not know how to implement
-    # locked_students = db.relationship("User")
-    # banned_students = db.relationship("User")
-    active = db.Column(db.Boolean)
+class Ranks(db.Model):
+    rankID = db.Column(db.Integer, primary_key=True)
+    rosterID = db.Column(db.Integer, db.ForeignKey('studentroster.contactID'))
+    rank = db.Column(db.Integer)
+    projectID = db.Column(db.Integer)
 
-class Student_Form(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    grouping = db.Column(db.Integer, db.ForeignKey("grouping.id"))
-    # ranks = db.Relationship("Group") Also do not know how to work
 
-class Grouping_Settings(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    grouping = db.Column(db.Integer, db.ForeignKey("grouping.id"))
+
+#link studentroster to project 1 to many relationship
+#in project foreignkey make ownerc current_user like previously
+#then when student logs in query rosters by their email
+#with all those queries you then can loop through and look at linked projects
+#by querying the 1 to many element
+
+
+#student logs in
+#queries all rosters filtered by their email
+#from that query get ownerid of roster
+#with ownerid query projects

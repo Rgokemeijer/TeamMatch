@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+{% block content %}
+
+
+    <head>
+        <title></title>
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.3/css/bootstrap.min.css" integrity="sha384-Zug+QiDoJOrZ5t4lssLdxGhVrurbmBWopoEl+M6BdEfwnCJZtKxi1KgxUyJq13dy" crossorigin="anonymous">
+    </head>
+    <body>
+	<div class="container">
+		<div class="row"><div class="col-sm-12">
+		<center><h3>Student Roster</h3></center>
+		</div></div>
+	</div>
+    </body>
+</html>
+ 	<form action="{{ url_for('views.addstudent')}}" method="POST"> 
+		<div class="form-group"><h5><center>Student Details</center></h5></div>
+		
+		<div class="form-group">
+            <input class="form-control" type="text" name="FirstName" placeholder="First Name">
+        </div>
+		<div class="form-group">
+            <input class="form-control" type="text" name="LastName" placeholder="Last Name">
+        </div>
+		<div class="form-group">
+            <input class="form-control" type="text" name="email" placeholder="Email">
+        </div>
+		<div class="form-group">
+			<center><button class="btn btn-primary">Submit</button></center>
+		</div>
+		</form>
+	
+	<table class="table">
+	<TH>
+	<TD><b>Name</b></TD>
+	<TD><b>Email</b></TD>
+	<TD></TD>
+	</TH>
+	{% for cl in contList %}
+	<TR>
+	<TD></TD>
+	<TD>{{cl.fName}} {{cl.lName}}</TD>
+	<TD>{{cl.email}}</TD>
+    <TD><form action="{{ url_for('views.deletestudent', mid=cl.contactID)}}" method="POST">
+ 
+			<button class="btn btn-primary">Delete</button>
+
+    </form></TD>
+	</TR>
+	{% endfor %}
+	</table>
+  </div>
+</div>
+{% endblock %}

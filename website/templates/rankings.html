@@ -1,0 +1,32 @@
+{% extends "base.html" %} {% block title %}Project Rankings{% endblock %} {% block content
+    %}
+    <h1>Project Rankings</h1>
+    <h6>Please rank the following projects using the check boxes. Do not rank multiple projects at the same number.</h3>
+  <table class="table">
+	<TH>
+	<TD><b>Project Name</b></TD>
+	<TD><b>Ranking</b></TD>
+	<TD></TD>
+	</TH>
+    <form method="POST">
+	{% for proj in projects %}
+	<TR>
+	  <TD></TD>
+	  <TD>{{proj.projectName}}</TD>
+    <TD>
+      {% for i in range(1, num_projects+1) %}
+        <input type="checkbox" id="Rank{{i}}" name="Rank{{i}}" value="{{proj.projectID}}">
+        <label for="Rank{{i}}"> Rank {{i}}</label>
+      {% endfor %}
+    </TD>
+  </TR>
+      {% endfor %}
+      <TR>
+        <TD></TD>
+        <TD>
+            <button class="btn btn-primary">Submit</button></form>
+          </TD>
+      </TR>
+      
+    </table>
+  {% endblock %}

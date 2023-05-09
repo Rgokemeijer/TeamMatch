@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+
+{% block title %}
+  Home
+{% endblock %}
+
+{% block content %}
+  <h1>Create Groups</h1>
+ 
+  
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Project Name</th>
+        <th>Students</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for group, students in groups.items() %}
+        <tr>
+          <td>{{ group }}</td>
+          <td>{{ ', '.join(students) }}</td>
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h1>Rankings by Student</h1>
+  <table class="table">
+    <thead>
+      <tr>
+        <th>Student</th>
+        {% for project in projects %}
+          <th>{{ project.projectName }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      {% for student, ranks in rankings.items() %}
+        <tr>
+          <td>{{ student }}</td>
+          {% for rank in ranks %}
+            <td>{{ rank }}</td>
+          {% endfor %}
+        </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+{% endblock %}
