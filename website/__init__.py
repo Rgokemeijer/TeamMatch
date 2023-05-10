@@ -1,3 +1,6 @@
+"""
+File to initialize the flask app as well as the database.
+"""
 from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from os import path
@@ -9,7 +12,7 @@ db_name = "database.db"
 
 def create_app():
     app = Flask(__name__)
-    app.config['SECRET_KEY'] = 'bsfhehgbdjnsbhfbsf'
+    app.config['SECRET_KEY'] = 'bsfhehgbdjnsbhfbsf' #secret key to encrypt information sent over HTTP; when deployed should be something serious
     app.config['SQLALCHEMY_DATABASE_URI'] = f'sqlite:///{db_name}'
     db.init_app(app)
 

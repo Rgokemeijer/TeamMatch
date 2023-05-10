@@ -1,3 +1,6 @@
+"""
+File to handle the backend of all the webpages that can be accessed once logged in.
+"""
 from flask import Blueprint, render_template, request, redirect, url_for, flash
 from flask_login import login_required, current_user
 from .models import StudentRoster, Project, Ranks, User
@@ -7,24 +10,28 @@ from .algorithm import algo
 views = Blueprint('views', __name__)
 
 
+#home page
 @views.route('/', methods =["GET", "POST"])
 @login_required
 def home():
-    rosters = StudentRoster.query.filter_by(email = current_user.email).all()
+    rosters = StudentRoster.query.filter_by(email = current_user.email).all() #gets all the students associated with this account
     return render_template("home.html", rosters=rosters, user=current_user) #in template check if current_user is authenticated
 
+#help page
 @views.route('/help')
 @login_required
 def help():
     return render_template("help.html", user=current_user) #in template check if current_user is authenticated
 
+#page to view/add/remove students from the roster i.e students you want to be assigned to groups
 @views.route("/studentroster")
 @login_required
 def studentroster():
-    contList=StudentRoster.query.filter_by(ownerID = current_user.id).all()
+    contList=StudentRoster.query.filter_by(ownerID = current_user.id).all() #all students that have currently been added
     cont=StudentRoster.query.first()
     return render_template("student_roster.html", cont=cont, contList=contList, user = current_user)
-    
+
+#code to handle when a user adds a student from the studentroster page
 @views.route("/addstudent", methods=["POST"])
 @login_required
 def addstudent():
@@ -40,10 +47,15 @@ def addstudent():
     contList=StudentRoster.query.filter_by(ownerID=current_user.id).all()
     return render_template("student_roster.html",cont=cont, contList=contList, user = current_user) 
 
+
 @views.route("/deletestudent/<mid>", methods=["POST"]) 
 @login_required
 def deletestudent(mid):
-    student = StudentRoster.query.filter_by(contactID=mid).first()
+    """
+    code to handle when a user removes a student from the studentroster page
+    mid: id of the student to be removed
+    """
+    student = StudentRoster.query.filter_by(contactID=mid).first() #queries the student to be deleted
     if student:
         for rank in student.ranks:
             db.session.delete(rank)
@@ -51,14 +63,15 @@ def deletestudent(mid):
         db.session.commit()
     return redirect(url_for('views.studentroster'))
 
-
+#page to view/add/remove projects that are to be associated with groupings
 @views.route("/projects")
 @login_required
 def projects():
-    contList=Project.query.filter_by(projectownerID = current_user.id).all()
+    contList=Project.query.filter_by(projectownerID = current_user.id).all() #get all the projects that have been added
     cont=Project.query.first()
     return render_template("projects.html", cont=cont, contList=contList, user = current_user)
-    
+
+#code to handle when a user adds a project
 @views.route("/addproject", methods=["POST"])
 @login_required
 def addproject():
@@ -78,6 +91,10 @@ def addproject():
 @views.route("/deleteproject/<mid>", methods=["POST"]) 
 @login_required
 def deleteproject(mid):
+    """
+    code to handle when a user removes a project
+    mid: id of project to be removed
+    """
     project = Project.query.filter_by(projectID=mid).first()
     if project:
         ranks = Ranks.query.filter_by(projectID=project.projectID).all()
@@ -90,17 +107,22 @@ def deleteproject(mid):
 @views.route("/studentrankings/<mid>/<conID>", methods = ['GET', 'POST']) 
 @login_required
 def studentrankings(mid, conID):
-    # there will be only one roster with this ID
-    owner = User.query.filter_by(id=mid).first()
-    projects = owner.project
-    if request.method == 'POST':
+    """
+    Page to allow students to rank projects
+    mid: id of the owner of the grouping (the one who assigned these projects to you to be ranked)
+    conID: ID of the roster (the ID of the student these rankings will be associated with)
+    """
+   
+    owner = User.query.filter_by(id=mid).first() #gets user information of the owner of this grouping
+    projects = owner.project #get projects associated with this grouping
+    if request.method == 'POST': #if the user is submitting rankings
         for i in range(1,1+len(projects)):
             proj_id = request.form.get(f'Rank{i}') # get which project ranked first
             #print(proj_id)
-            if proj_id is None:
+            if proj_id is None: #if the student didn't rank every project
                 flash('Please rank all projects once', category = 'error')
                 return render_template("rankings.html", projects = projects, num_projects=len(projects), user = current_user)
-            #check if a ranking has been submitted
+            #check if a ranking has already been submitted
             cur_ranking = Ranks.query.filter_by(rosterID=conID, rank=i).first()
             if cur_ranking is None:
                 # if it has not create one
@@ -113,6 +135,7 @@ def studentrankings(mid, conID):
         return redirect(url_for('views.home'))
     return render_template("rankings.html", projects = projects, num_projects=len(projects), user = current_user)
 
+#page for the user to create groups based on rankings
 @views.route("/createGroups", methods = ['GET', 'POST']) 
 @login_required
 def createGroups():
@@ -148,17 +171,17 @@ def createGroups():
             ranks[student_index_lookup.index(student.contactID)][proj_index_lookup.index(rank.projectID)] = rank.rank**2  #if it needs to start at 0 then have -1 
 
     single_array_ranks = ranks.flatten() #turns 2d array to 1d
-    result = algo(single_array_ranks, len(rosters), len(projects))
+    result = algo(single_array_ranks, len(rosters), len(projects)) #run grouping algorith
     i = 0
     for student in result:
         group_num = np.where(student == 1)
         group_num = group_num[0][0] #get what group num they are in (indexed according to proj_index_lookup)
-        proj = Project.query.filter_by(projectID = proj_index_lookup[group_num]).first()
+        proj = Project.query.filter_by(projectID = proj_index_lookup[group_num]).first() #find what project the student is assigned to
         proj_name = proj.projectName
-        stud = StudentRoster.query.filter_by(contactID = student_index_lookup[i]).first()
+        stud = StudentRoster.query.filter_by(contactID = student_index_lookup[i]).first() #find the name of the student
         stud_name = stud.fName + " " + stud.lName
         i += 1
-        groups[proj_name].append(stud_name)
+        groups[proj_name].append(stud_name) #associate student with project in dictionary
     
     #show student rankings
     stud_ranks = {}

@@ -1,3 +1,6 @@
+"""
+File to run the application
+"""
 from website import create_app
 
 
